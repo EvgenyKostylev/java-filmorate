@@ -22,8 +22,7 @@ public class FilmController {
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE) || film.getDuration().isNegative()
-                || film.getDuration().isZero()) {
+        if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
             log.warn("Создаваемый обьект фильма не прошёл валидацию: {}", film);
             throw new ValidationException("Обьект фильма не соответствует требованиям");
         }
@@ -41,8 +40,7 @@ public class FilmController {
             throw new ValidationException("Id должен быть указан");
         }
         if (listFilms.containsKey(film.getId())) {
-            if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE) || film.getDuration().isNegative()
-                    || film.getDuration().isZero()) {
+            if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
                 log.warn("Обновляемый обьект фильма не прошёл валидацию: {}", film);
                 throw new ValidationException("Обьект фильма не соответствует требованиям");
             }
