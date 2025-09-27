@@ -17,6 +17,30 @@ class FilmTest {
     private Validator validator;
 
     @Test
+    public void filmReleaseDateCantBeEarly28December1895Year() {
+        Film film = new Film("name", "description", LocalDate.of(1895, 12, 27),
+                100);
+        Errors errors = new BeanPropertyBindingResult(film, "film");
+
+        validator.validate(film, errors);
+        assertTrue(errors.hasErrors(), "Валидация releaseDate не происходит");
+        assertEquals(1, errors.getErrorCount(), "Количество ошибок не соответствует ожидаемому");
+        assertNotNull(errors.getFieldError("releaseDate"), "Ошибка не связана с валидацией releaseDate");
+    }
+
+    @Test
+    public void filmReleaseDateCanBe28December1895Year() {
+        Film film = new Film("name", "description", LocalDate.of(1895, 12, 28),
+                100);
+        Errors errors = new BeanPropertyBindingResult(film, "film");
+
+        validator.validate(film, errors);
+        assertTrue(errors.hasErrors(), "Валидация releaseDate не происходит");
+        assertEquals(1, errors.getErrorCount(), "Количество ошибок не соответствует ожидаемому");
+        assertNotNull(errors.getFieldError("releaseDate"), "Ошибка не связана с валидацией releaseDate");
+    }
+
+    @Test
     public void filmNameCantBeNull() {
         Film film = new Film(null, "description", LocalDate.of(2000, 1, 1),
                 100);

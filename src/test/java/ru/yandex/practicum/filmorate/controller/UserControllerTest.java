@@ -1,30 +1,18 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 public class UserControllerTest {
-    private static UserController controller;
-
-    @BeforeAll
-    public static void beforeAll() {
-        controller = new UserController();
-    }
-
-    @Test
-    public void userLoginCantExistWithWhitespaces() {
-        User user = new User("Login@Mail", "Not Validate Login", LocalDate.of(2000, 1,
-                1));
-
-        assertThrows(ValidationException.class, () -> controller.create(user), "Принимает login с символами" +
-                " пробела");
-    }
+    @Autowired
+    private UserController controller;
 
     @Test
     public void userNameUseLoginIfNameIsEmpty() {

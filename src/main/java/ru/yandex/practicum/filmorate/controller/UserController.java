@@ -17,10 +17,6 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        if (user.getLogin().contains(" ")) {
-            log.warn("Создаваемый обьект пользователя не прошёл валидацию: {}", user);
-            throw new ValidationException("Обьект пользователя не соответствует требованиям");
-        }
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
@@ -38,10 +34,6 @@ public class UserController {
             throw new ValidationException("Id должен быть указан");
         }
         if (listUsers.containsKey(user.getId())) {
-            if (user.getLogin().contains(" ")) {
-                log.warn("Обновляемый обьект пользователя не прошёл валидацию: {}", user);
-                throw new ValidationException("Обьект пользователя не соответствует требованиям");
-            }
             if (user.getName() == null) {
                 user.setName(user.getLogin());
             }

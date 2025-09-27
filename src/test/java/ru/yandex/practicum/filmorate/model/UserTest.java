@@ -17,6 +17,18 @@ class UserTest {
     private Validator validator;
 
     @Test
+    public void userLoginCantExistWithWhitespaces() {
+        User user = new User("Login@Mail", "Not Validate Login", LocalDate.of(2000, 1,
+                1));
+        Errors errors = new BeanPropertyBindingResult(user, "user");
+
+        validator.validate(user, errors);
+        assertTrue(errors.hasErrors(), "Валидация login не происходит");
+        assertEquals(1, errors.getErrorCount(), "Количество ошибок не соответствует ожидаемому");
+        assertNotNull(errors.getFieldError("login"), "Ошибка не связана с валидацией login");
+    }
+
+    @Test
     public void userEmailCantBeNull() {
         User user = new User(null, "login", LocalDate.of(2000, 1, 1));
         Errors errors = new BeanPropertyBindingResult(user, "user");
