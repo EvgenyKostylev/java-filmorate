@@ -4,10 +4,13 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
-    private int id;
+    private Long id;
 
     @NotBlank
     @Email
@@ -21,4 +24,18 @@ public class User {
 
     @PastOrPresent
     private final LocalDate birthday;
+
+    private Set<Long> listFriendsId = new HashSet<>();
+
+    public void addFriend(long friendId) {
+        listFriendsId.add(friendId);
+    }
+
+    public void removeFriend(long friendId) {
+        listFriendsId.remove(friendId);
+    }
+
+    public Collection<Long> getFriends() {
+        return listFriendsId;
+    }
 }

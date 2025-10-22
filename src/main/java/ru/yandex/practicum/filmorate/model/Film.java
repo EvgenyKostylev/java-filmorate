@@ -7,6 +7,8 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.DateAfter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -14,7 +16,7 @@ public class Film {
 
     private static final String MIN_RELEASE_DATE = "1895-12-28";
 
-    private int id;
+    private Long id;
 
     @NotBlank
     private final String name;
@@ -27,4 +29,18 @@ public class Film {
 
     @Positive
     private final long duration;
+
+    private Set<Long> listUsersByIdLikes = new HashSet<>();
+
+    public void addLike(long userId) {
+        listUsersByIdLikes.add(userId);
+    }
+
+    public void removeLike(long userId) {
+        listUsersByIdLikes.remove(userId);
+    }
+
+    public int getLikeCount() {
+        return listUsersByIdLikes.size();
+    }
 }
