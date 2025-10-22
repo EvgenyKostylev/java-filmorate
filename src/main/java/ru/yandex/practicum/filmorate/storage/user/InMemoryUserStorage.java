@@ -6,8 +6,8 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -59,8 +59,8 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-    public Collection<User> getCollection() {
-        return listUsers.values();
+    public List<User> getCollection() {
+        return (List<User>) listUsers.values();
     }
 
     private void find(long userId) {
