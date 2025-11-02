@@ -6,17 +6,14 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> listFilms = new HashMap<>();
 
-    public Film create(Film film) {
+    public Film save(Film film) {
         film.setId(getNextId());
         log.info("Создан обьект фильма: {}", film);
         listFilms.put(film.getId(), film);
@@ -32,7 +29,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-    public Film remove(long filmId) {
+    public Film delete(long filmId) {
         find(filmId);
 
         Film removedFilm = listFilms.get(filmId);
@@ -43,10 +40,10 @@ public class InMemoryFilmStorage implements FilmStorage {
         return removedFilm;
     }
 
-    public Film get(long filmId) {
+    public Optional<Film> get(long filmId) {
         find(filmId);
 
-        Film film = listFilms.get(filmId);
+        Optional<Film> film = Optional.of(listFilms.get(filmId));
 
         log.info("Выведен обьект фильма: {}", film);
 

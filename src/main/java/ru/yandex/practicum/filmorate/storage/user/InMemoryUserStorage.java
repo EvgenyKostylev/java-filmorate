@@ -6,17 +6,14 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> listUsers = new HashMap<>();
 
-    public User create(User user) {
+    public User save(User user) {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
@@ -39,7 +36,7 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-    public User remove(long userId) {
+    public User delete(long userId) {
         find(userId);
 
         User removedUser = listUsers.get(userId);
@@ -50,10 +47,10 @@ public class InMemoryUserStorage implements UserStorage {
         return removedUser;
     }
 
-    public User get(long userId) {
+    public Optional<User> get(long userId) {
         find(userId);
 
-        User user = listUsers.get(userId);
+        Optional<User> user = Optional.of(listUsers.get(userId));
 
         log.info("Выведен обьект пользователя: {}", user);
 

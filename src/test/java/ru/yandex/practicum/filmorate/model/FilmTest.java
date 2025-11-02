@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import ru.yandex.practicum.filmorate.dto.film.NewFilmRequest;
 
 import java.time.LocalDate;
 
@@ -18,8 +19,12 @@ class FilmTest {
 
     @Test
     public void filmReleaseDateCantBeEarly28December1895Year() {
-        Film film = new Film("name", "description", LocalDate.of(1895, 12, 27),
-                100);
+        NewFilmRequest film = new NewFilmRequest("name",
+                "description",
+                LocalDate.of(1895, 12, 27),
+                100L,
+                null,
+                null);
         Errors errors = new BeanPropertyBindingResult(film, "film");
 
         validator.validate(film, errors);
@@ -30,8 +35,12 @@ class FilmTest {
 
     @Test
     public void filmReleaseDateCanBe28December1895Year() {
-        Film film = new Film("name", "description", LocalDate.of(1895, 12, 28),
-                100);
+        NewFilmRequest film = new NewFilmRequest("name",
+                "description",
+                LocalDate.of(1895, 12, 28),
+                100L,
+                null,
+                null);
         Errors errors = new BeanPropertyBindingResult(film, "film");
 
         validator.validate(film, errors);
@@ -42,8 +51,12 @@ class FilmTest {
 
     @Test
     public void filmNameCantBeNull() {
-        Film film = new Film(null, "description", LocalDate.of(2000, 1, 1),
-                100);
+        NewFilmRequest film = new NewFilmRequest(null,
+                "description",
+                LocalDate.of(2000, 1, 1),
+                100L,
+                null,
+                null);
         Errors errors = new BeanPropertyBindingResult(film, "film");
 
         validator.validate(film, errors);
@@ -54,12 +67,16 @@ class FilmTest {
 
     @Test
     public void filmDescriptionLengthCantBeMore200Symbols() {
-        Film film = new Film("name", "Настоящее описание характеризуется комплексным и" +
-                " детализированным содержанием, объём которого, выраженный в символах с учётом пробелов и знаков" +
-                " препинания, существенно превосходит установленную минимальную планку, составляющую двести единиц." +
-                " Данный параметр был тщательно верифицирован для гарантии соответствия формальным критериям и" +
-                " требованиям, предъявляемым к текстовым данным в рамках поставленной задачи.",
-                LocalDate.of(2000, 1, 1), 100);
+        NewFilmRequest film = new NewFilmRequest("name",
+                "Настоящее описание характеризуется комплексным и детализированным содержанием, объём " +
+                        "которого, выраженный в символах с учётом пробелов и знаков препинания, существенно " +
+                        "превосходит установленную минимальную планку, составляющую двести единиц. Данный параметр " +
+                        "был тщательно верифицирован для гарантии соответствия формальным критериям и требованиям, " +
+                        "предъявляемым к текстовым данным в рамках поставленной задачи.",
+                LocalDate.of(2000, 1, 1),
+                100L,
+                null,
+                null);
         Errors errors = new BeanPropertyBindingResult(film, "film");
 
         validator.validate(film, errors);
@@ -70,10 +87,14 @@ class FilmTest {
 
     @Test
     public void filmDescriptionLengthCanBe200Symbols() {
-        Film film = new Film("name", "Данное текстовое описание было сознательно разработано для" +
-                " достижения точного лимита в двести символов, включая все пробелы и знаки препинания. Двести" +
-                " символов длинна этого текста с учетом всех знаков", LocalDate.of(2000, 1, 1),
-                100);
+        NewFilmRequest film = new NewFilmRequest("name",
+                "Данное текстовое описание было сознательно разработано для достижения точного лимита в " +
+                        "двести символов, включая все пробелы и знаки препинания. Двести символов длинна этого " +
+                        "текста с учетом всех знаков",
+                LocalDate.of(2000, 1, 1),
+                100L,
+                null,
+                null);
         Errors errors = new BeanPropertyBindingResult(film, "film");
 
         validator.validate(film, errors);
@@ -82,8 +103,12 @@ class FilmTest {
 
     @Test
     public void filmDurationCantBeNegative() {
-        Film film = new Film("name", "description", LocalDate.of(2000, 1, 1),
-                -100);
+        NewFilmRequest film = new NewFilmRequest("name",
+                "description",
+                LocalDate.of(2000, 1, 1),
+                -100L,
+                null,
+                null);
         Errors errors = new BeanPropertyBindingResult(film, "film");
 
         validator.validate(film, errors);
@@ -94,8 +119,11 @@ class FilmTest {
 
     @Test
     public void filmDurationCantBe0() {
-        Film film = new Film("name", "description", LocalDate.of(2000, 1, 1),
-                0);
+        NewFilmRequest film = new NewFilmRequest("name",
+                "description", LocalDate.of(2000, 1, 1),
+                0L,
+                null,
+                null);
         Errors errors = new BeanPropertyBindingResult(film, "film");
 
         validator.validate(film, errors);

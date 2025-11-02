@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.DateAfter;
 
@@ -11,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Builder
 public class Film {
     private static final int MAX_DESCRIPTION_LENGTH = 200;
 
@@ -19,16 +21,18 @@ public class Film {
     private Long id;
 
     @NotBlank
-    private final String name;
+    private String name;
 
     @Size(max = MAX_DESCRIPTION_LENGTH)
-    private final String description;
+    private String description;
 
     @DateAfter(date = MIN_RELEASE_DATE)
-    private final LocalDate releaseDate;
+    private LocalDate releaseDate;
 
     @Positive
-    private final long duration;
+    private Long duration;
+
+    private Long ratingId;
 
     private Set<Long> listUsersByIdLikes = new HashSet<>();
 
