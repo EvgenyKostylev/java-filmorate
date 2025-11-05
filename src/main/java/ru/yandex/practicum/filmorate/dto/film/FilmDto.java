@@ -35,9 +35,8 @@ public class FilmDto {
     @Positive
     private Long duration;
 
-    @JsonProperty("genres")
-    private List<Genre> genre;
-
     @JsonProperty("mpa")
     private Rating rating;
+
+    private List<Genre> genres;
 }

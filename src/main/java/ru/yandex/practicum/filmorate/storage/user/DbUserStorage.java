@@ -11,16 +11,19 @@ import java.util.Optional;
 
 @Repository
 public class DbUserStorage extends DbBaseStorage<User> implements UserStorage {
-    private static final String FIND_ALL_QUERY = "SELECT * FROM users";
-    private static final String FIND_BY_ID_QUERY = "SELECT * FROM users WHERE id = ?";
+    private static final String FIND_ALL_QUERY = "SELECT * " +
+            "FROM users";
+    private static final String FIND_BY_ID_QUERY = "SELECT * " +
+            "FROM users " +
+            "WHERE id = ?";
     private static final String INSERT_QUERY = "INSERT INTO users(email, login, name, birthday)" +
             "VALUES (?, ?, ?, ?)";
-    private static final String UPDATE_QUERY = "UPDATE users SET email = ?, " +
+    private static final String UPDATE_QUERY = "UPDATE users " +
+            "SET email = ?, " +
             "login = ?, " +
             "name = ?, " +
             "birthday = ? " +
             "WHERE id = ?";
-
 
     public DbUserStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
         super(jdbc, mapper);
@@ -30,7 +33,7 @@ public class DbUserStorage extends DbBaseStorage<User> implements UserStorage {
         return findOne(FIND_BY_ID_QUERY, userId);
     }
 
-    public List<User> getCollection() {
+    public List<User> getAll() {
         return findMany(FIND_ALL_QUERY);
     }
 
@@ -59,9 +62,5 @@ public class DbUserStorage extends DbBaseStorage<User> implements UserStorage {
         );
 
         return user;
-    }
-
-    public User delete(long userId) {
-        throw new RuntimeException("Not implemented");
     }
 }

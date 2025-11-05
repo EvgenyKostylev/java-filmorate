@@ -20,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Import({DbUserStorage.class,
         UserRowMapper.class})
-class DbUserStorageTest {
+public class DbUserStorageTest {
     private final DbUserStorage dbUserStorage;
 
     @Test
-    void testCreateUser() {
+    public void testCreateUser() {
         User created = dbUserStorage.save(User.builder()
                 .email("user@mail.com")
                 .login("user").name("User")
@@ -40,7 +40,7 @@ class DbUserStorageTest {
     }
 
     @Test
-    void testFindUserById() {
+    public void testFindUserById() {
         User created = dbUserStorage.save(User.builder()
                 .email("user@mail.com")
                 .login("user").name("User")
@@ -56,7 +56,7 @@ class DbUserStorageTest {
     }
 
     @Test
-    void testUpdateUser() {
+    public void testUpdateUser() {
         User user = User.builder()
                 .email("olduser@mail.com")
                 .login("oldlogin").name("old name")
@@ -78,7 +78,7 @@ class DbUserStorageTest {
     }
 
     @Test
-    void testGetAllUsers() {
+    public void testGetAllUsers() {
         dbUserStorage.save(User.builder()
                 .email("user1@mail.com")
                 .login("user1")
@@ -92,14 +92,14 @@ class DbUserStorageTest {
                 .birthday(LocalDate.of(1992, 2, 2))
                 .build());
 
-        List<User> users = dbUserStorage.getCollection();
+        List<User> users = dbUserStorage.getAll();
 
         assertThat(users).isNotEmpty();
         assertThat(users.size()).isGreaterThanOrEqualTo(2);
     }
 
     @Test
-    void testGetUserNotFound() {
+    public void testGetUserNotFound() {
         Optional<User> missing = dbUserStorage.get(9999L);
 
         assertThat(missing).isEmpty();

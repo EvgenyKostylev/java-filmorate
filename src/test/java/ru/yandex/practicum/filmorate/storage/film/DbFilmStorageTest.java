@@ -20,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Import({DbFilmStorage.class,
         FilmRowMapper.class})
-class DbFilmStorageTest {
+public class DbFilmStorageTest {
     private final DbFilmStorage dbFilmStorage;
 
     @Test
-    void testCreateFilm() {
+    public void testCreateFilm() {
         Film created = dbFilmStorage.save(Film.builder()
                 .name("film")
                 .description("film description")
@@ -42,7 +42,7 @@ class DbFilmStorageTest {
     }
 
     @Test
-    void testFindFilmById() {
+    public void testFindFilmById() {
         Film created = dbFilmStorage.save(Film.builder()
                 .name("film")
                 .description("film description")
@@ -60,7 +60,7 @@ class DbFilmStorageTest {
     }
 
     @Test
-    void testUpdateFilm() {
+    public void testUpdateFilm() {
         Film film = Film.builder()
                 .name("old film")
                 .description("old film description")
@@ -84,7 +84,7 @@ class DbFilmStorageTest {
     }
 
     @Test
-    void testGetAllFilms() {
+    public void testGetAllFilms() {
         dbFilmStorage.save(Film.builder()
                 .name("film one")
                 .description("film one description")
@@ -98,14 +98,14 @@ class DbFilmStorageTest {
                 .duration(110L)
                 .build());
 
-        List<Film> films = dbFilmStorage.getCollection();
+        List<Film> films = dbFilmStorage.getAll();
 
         assertThat(films).isNotEmpty();
         assertThat(films.size()).isGreaterThanOrEqualTo(2);
     }
 
     @Test
-    void testGetFilmNotFound() {
+    public void testGetFilmNotFound() {
         Optional<Film> missing = dbFilmStorage.get(9999L);
 
         assertThat(missing).isEmpty();

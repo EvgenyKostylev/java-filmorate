@@ -19,11 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Import({DbGenreStorage.class,
         GenreRowMapper.class})
-class DbGenreStorageTest {
+public class DbGenreStorageTest {
     private final DbGenreStorage dbGenreStorage;
 
     @Test
-    void testFindGenreById() {
+    public void testFindGenreById() {
         Optional<Genre> genre = dbGenreStorage.get(1L);
 
         assertThat(genre).isPresent()
@@ -33,8 +33,8 @@ class DbGenreStorageTest {
     }
 
     @Test
-    void testGetAllGenres() {
-        List<Genre> genres = dbGenreStorage.getCollection();
+    public void testGetAllGenres() {
+        List<Genre> genres = dbGenreStorage.getAll();
 
         assertThat(genres).isNotEmpty();
     }

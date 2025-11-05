@@ -25,12 +25,12 @@ import static org.assertj.core.api.Assertions.assertThat;
         FilmGenreRowMapper.class,
         DbFilmStorage.class,
         FilmRowMapper.class})
-class DbFilmGenreStorageTest {
+public class DbFilmGenreStorageTest {
     private final DbFilmGenreStorage dbFilmGenreStorage;
     private final DbFilmStorage dbFilmStorage;
 
     @Test
-    void testSaveCollection() {
+    public void testSaveCollection() {
         Film film = dbFilmStorage.save(Film.builder()
                 .name("film")
                 .description("film description")
@@ -47,18 +47,18 @@ class DbFilmGenreStorageTest {
                         .build()
         );
 
-        List<Long> savedIds = dbFilmGenreStorage.saveCollection(film.getId(), genres);
+        List<Long> savedIds = dbFilmGenreStorage.saveAllById(film.getId(), genres);
 
         assertThat(savedIds).containsExactlyInAnyOrder(1L, 2L);
 
-        List<FilmGenre> collection = dbFilmGenreStorage.getCollection(film.getId());
+        List<FilmGenre> collection = dbFilmGenreStorage.getAllById(film.getId());
 
         assertThat(collection).isNotEmpty();
         assertThat(collection.size()).isGreaterThanOrEqualTo(2);
     }
 
     @Test
-    void testRemoveCollection() {
+    public void testRemoveCollection() {
         Film film = dbFilmStorage.save(Film.builder()
                 .name("film")
                 .description("film description")
@@ -75,19 +75,19 @@ class DbFilmGenreStorageTest {
                         .build()
         );
 
-        dbFilmGenreStorage.saveCollection(film.getId(), genres);
+        dbFilmGenreStorage.saveAllById(film.getId(), genres);
 
-        boolean removed = dbFilmGenreStorage.deleteCollection(film.getId());
+        boolean removed = dbFilmGenreStorage.deleteAllById(film.getId());
 
         assertThat(removed).isTrue();
 
-        List<FilmGenre> collectionAfterRemoval = dbFilmGenreStorage.getCollection(film.getId());
+        List<FilmGenre> collectionAfterRemoval = dbFilmGenreStorage.getAllById(film.getId());
 
         assertThat(collectionAfterRemoval).isEmpty();
     }
 
     @Test
-    void testGetCollection() {
+    public void testGetCollection() {
         Film film = dbFilmStorage.save(Film.builder()
                 .name("film")
                 .description("film description")
@@ -104,16 +104,16 @@ class DbFilmGenreStorageTest {
                         .build()
         );
 
-        dbFilmGenreStorage.saveCollection(film.getId(), genres);
+        dbFilmGenreStorage.saveAllById(film.getId(), genres);
 
-        List<FilmGenre> collection = dbFilmGenreStorage.getCollection(film.getId());
+        List<FilmGenre> collection = dbFilmGenreStorage.getAllById(film.getId());
 
         assertThat(collection).isNotEmpty();
         assertThat(collection.size()).isGreaterThanOrEqualTo(2);
     }
 
     @Test
-    void testSaveEmptyCollection() {
+    public void testSaveEmptyCollection() {
         Film film = dbFilmStorage.save(Film.builder()
                 .name("film")
                 .description("film description")
@@ -123,9 +123,9 @@ class DbFilmGenreStorageTest {
 
         List<Genre> genres = List.of();
 
-        List<Long> savedIds = dbFilmGenreStorage.saveCollection(film.getId(), genres);
+        List<Long> savedIds = dbFilmGenreStorage.saveAllById(film.getId(), genres);
 
         assertThat(savedIds).isEmpty();
-        assertThat(dbFilmGenreStorage.getCollection(film.getId())).isEmpty();
+        assertThat(dbFilmGenreStorage.getAllById(film.getId())).isEmpty();
     }
 }

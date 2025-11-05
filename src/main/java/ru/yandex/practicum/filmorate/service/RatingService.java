@@ -24,8 +24,8 @@ public class RatingService {
                 .orElseThrow(() -> new NotFoundException("Рейтинг с id = " + ratingId + " не найден"));
     }
 
-    public Collection<RatingDto> getCollection() {
-        return ratingStorage.getCollection()
+    public Collection<RatingDto> getAll() {
+        return ratingStorage.getAll()
                 .stream()
                 .map(RatingMapper::mapToRatingDto)
                 .collect(Collectors.toList());

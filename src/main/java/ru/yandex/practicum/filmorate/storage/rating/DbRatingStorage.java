@@ -11,8 +11,11 @@ import java.util.Optional;
 
 @Repository
 public class DbRatingStorage extends DbBaseStorage<Rating> implements RatingStorage {
-    private static final String FIND_BY_ID_QUERY = "SELECT * FROM ratings WHERE id = ?";
-    private static final String FIND_ALL_QUERY = "SELECT * FROM ratings";
+    private static final String FIND_BY_ID_QUERY = "SELECT * " +
+            "FROM ratings " +
+            "WHERE id = ?";
+    private static final String FIND_ALL_QUERY = "SELECT * " +
+            "FROM ratings";
 
     public DbRatingStorage(JdbcTemplate jdbc, RowMapper<Rating> mapper) {
         super(jdbc, mapper);
@@ -22,7 +25,7 @@ public class DbRatingStorage extends DbBaseStorage<Rating> implements RatingStor
         return findOne(FIND_BY_ID_QUERY, genreId);
     }
 
-    public List<Rating> getCollection() {
+    public List<Rating> getAll() {
         return findMany(FIND_ALL_QUERY);
     }
 }

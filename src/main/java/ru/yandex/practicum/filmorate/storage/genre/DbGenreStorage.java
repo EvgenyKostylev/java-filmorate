@@ -11,8 +11,11 @@ import java.util.Optional;
 
 @Repository
 public class DbGenreStorage extends DbBaseStorage<Genre> implements GenreStorage {
-    private static final String FIND_BY_ID_QUERY = "SELECT * FROM genres WHERE id = ?";
-    private static final String FIND_ALL_QUERY = "SELECT * FROM genres";
+    private static final String FIND_BY_ID_QUERY = "SELECT * " +
+            "FROM genres " +
+            "WHERE id = ?";
+    private static final String FIND_ALL_QUERY = "SELECT * " +
+            "FROM genres";
 
     public DbGenreStorage(JdbcTemplate jdbc, RowMapper<Genre> mapper) {
         super(jdbc, mapper);
@@ -22,7 +25,7 @@ public class DbGenreStorage extends DbBaseStorage<Genre> implements GenreStorage
         return findOne(FIND_BY_ID_QUERY, genreId);
     }
 
-    public List<Genre> getCollection() {
+    public List<Genre> getAll() {
         return findMany(FIND_ALL_QUERY);
     }
 }

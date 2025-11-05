@@ -34,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping
-    public Collection<UserDto> getCollection() {
-        return userService.getCollection();
+    public Collection<UserDto> getAll() {
+        return userService.getAll();
     }
 
     @PutMapping("/{id}/friends/{friendId}")
@@ -53,15 +53,15 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<UserDto> getFriendCollection(
+    public Collection<UserDto> getAllFriends(
             @PathVariable("id") long userId) {
-        return userService.getFriendCollection(userId);
+        return userService.getAllFriends(userId);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Collection<UserDto> getMutualFriendCollection(
+    public Collection<UserDto> getAllMutualFriends(
             @PathVariable("id") long userId,
             @PathVariable("otherId") long friendId) {
-        return userService.getMutualFriendCollection(userId, friendId);
+        return userService.getMutualFriends(userId, friendId);
     }
 }

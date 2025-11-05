@@ -14,5 +14,5 @@ public interface FriendshipStorage {
 
     Optional<Friendship> get(long firstUserId, long secondUserId);
 
-    List<Friendship> getCollection(long userId);
+    List<Friendship> getAllById(long userId);
 }

@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface RatingStorage {
     Optional<Rating> get(long ratingId);
 
-    List<Rating> getCollection();
+    List<Rating> getAll();
 }

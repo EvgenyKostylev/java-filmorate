@@ -30,13 +30,13 @@ import static org.assertj.core.api.Assertions.assertThat;
         UserRowMapper.class,
         DbFilmStorage.class,
         FilmRowMapper.class})
-class DbLikeStorageTest {
+public class DbLikeStorageTest {
     private final DbLikeStorage dbLikeStorage;
     private final DbUserStorage dbUserStorage;
     private final DbFilmStorage dbFilmStorage;
 
     @Test
-    void testSaveLike() {
+    public void testSaveLike() {
         User user = dbUserStorage.save(User.builder()
                 .email("user@mail.com")
                 .login("user").name("User")
@@ -64,7 +64,7 @@ class DbLikeStorageTest {
     }
 
     @Test
-    void testFindLikeByIds() {
+    public void testFindLikeByIds() {
         User user = dbUserStorage.save(User.builder()
                 .email("user@mail.com")
                 .login("user").name("User")
@@ -89,7 +89,7 @@ class DbLikeStorageTest {
     }
 
     @Test
-    void testRemoveLike() {
+    public void testRemoveLike() {
         User user = dbUserStorage.save(User.builder()
                 .email("user@mail.com")
                 .login("user").name("User")
@@ -115,7 +115,7 @@ class DbLikeStorageTest {
     }
 
     @Test
-    void testGetAllLikesByFilmId() {
+    public void testGetAllLikesByFilmId() {
         Film film = dbFilmStorage.save(Film.builder()
                 .name("film")
                 .description("film description")
@@ -138,7 +138,7 @@ class DbLikeStorageTest {
         dbLikeStorage.save(film.getId(), user1.getId());
         dbLikeStorage.save(film.getId(), user2.getId());
 
-        List<Like> likes = dbLikeStorage.getCollection(film.getId());
+        List<Like> likes = dbLikeStorage.getAllById(film.getId());
 
         assertThat(likes).isNotEmpty();
         assertThat(likes.size()).isGreaterThanOrEqualTo(2);

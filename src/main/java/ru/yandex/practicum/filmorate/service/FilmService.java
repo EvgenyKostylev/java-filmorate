@@ -9,21 +9,14 @@ import ru.yandex.practicum.filmorate.dto.film.NewFilmRequest;
 import ru.yandex.practicum.filmorate.dto.film.UpdateFilmRequest;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmGenre;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.genre.FilmGenreStorage;
-import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.storage.rating.RatingStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,23 +25,17 @@ public class FilmService {
     public FilmService(@Autowired @Qualifier("dbFilmStorage") FilmStorage filmStorage,
                        @Autowired @Qualifier("dbUserStorage") UserStorage userStorage,
                        @Autowired LikeStorage likeStorage,
-                       @Autowired RatingStorage ratingStorage,
-                       @Autowired FilmGenreStorage filmGenreStorage,
-                       @Autowired GenreStorage genreStorage) {
+                       @Autowired FilmGenreStorage filmGenreStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.likeStorage = likeStorage;
-        this.ratingStorage = ratingStorage;
         this.filmGenreStorage = filmGenreStorage;
-        this.genreStorage = genreStorage;
     }
 
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final LikeStorage likeStorage;
-    private final RatingStorage ratingStorage;
     private final FilmGenreStorage filmGenreStorage;
-    private final GenreStorage genreStorage;
 
     private static final int COUNT_FOR_MOST_POPULAR_LIST = 10;
 
@@ -57,12 +44,9 @@ public class FilmService {
 
         film = filmStorage.save(film);
 
-        List<Genre> genres = filmGenreStorage.saveCollection(film.getId(), request.getGenre())
-                .stream()
-                .map(genreId -> genreStorage.get(genreId).get())
-                .toList();
+        filmGenreStorage.saveAllById(film.getId(), request.getGenres());
 
-        return FilmMapper.mapToFilmDto(film, ratingStorage.get(film.getRatingId()), genres);
+        return FilmMapper.mapToFilmDto(film);
     }
 
     public FilmDto update(UpdateFilmRequest request) {
@@ -72,24 +56,21 @@ public class FilmService {
 
         updatedFilm = filmStorage.update(updatedFilm);
 
-        List<Genre> genres = filmGenreStorage.saveCollection(updatedFilm.getId(), request.getGenre())
-                .stream()
-                .map(genreId -> genreStorage.get(genreId).get())
-                .toList();
+        filmGenreStorage.saveAllById(updatedFilm.getId(), request.getGenres());
 
-        return FilmMapper.mapToFilmDto(updatedFilm, ratingStorage.get(updatedFilm.getRatingId()), genres);
+        return FilmMapper.mapToFilmDto(updatedFilm);
     }
 
     public FilmDto get(long filmId) {
         return filmStorage.get(filmId)
-                .map(this::getFilmDto)
+                .map(FilmMapper::mapToFilmDto)
                 .orElseThrow(() -> new NotFoundException("Фильм с id = " + filmId + " не найден"));
     }
 
-    public Collection<FilmDto> getCollection() {
-        return filmStorage.getCollection()
+    public Collection<FilmDto> getAll() {
+        return filmStorage.getAll()
                 .stream()
-                .map(this::getFilmDto)
+                .map(FilmMapper::mapToFilmDto)
                 .toList();
     }
 
@@ -120,11 +101,11 @@ public class FilmService {
     }
 
     public Collection<FilmDto> getMostPopularFilms(long count) {
-        var sortedFilms = getCollection()
+        var sortedFilms = getAll()
                 .stream()
-                .filter(filmDto -> !likeStorage.getCollection(filmDto.getId()).isEmpty())
+                .filter(filmDto -> !likeStorage.getAllById(filmDto.getId()).isEmpty())
                 .sorted(Comparator
-                        .comparingLong((FilmDto filmDto) -> likeStorage.getCollection(filmDto.getId()).size())
+                        .comparingLong((FilmDto filmDto) -> likeStorage.getAllById(filmDto.getId()).size())
                         .reversed())
                 .toList();
 
@@ -133,20 +114,6 @@ public class FilmService {
         }
 
         return sortedFilms.stream().limit(COUNT_FOR_MOST_POPULAR_LIST).collect(Collectors.toList());
-    }
-
-    private FilmDto getFilmDto(Film film) {
-        List<FilmGenre> filmGenres = filmGenreStorage.getCollection(film.getId());
-
-        List<Genre> genres = filmGenres
-                .stream()
-                .filter(filmGenre -> filmGenre.getGenreId() != 0)
-                .map(filmGenre -> genreStorage.get(filmGenre.getGenreId()).get())
-                .toList();
-
-        Optional<Rating> rating = ratingStorage.get(film.getRatingId());
-
-        return FilmMapper.mapToFilmDto(film, rating, genres);
     }
 
     private void ensureUserExists(long userId) {

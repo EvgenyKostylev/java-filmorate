@@ -11,11 +11,37 @@ import java.util.Optional;
 
 @Repository
 public class DbFilmStorage extends DbBaseStorage<Film> implements FilmStorage {
-    private static final String FIND_ALL_QUERY = "SELECT * FROM films";
-    private static final String FIND_BY_ID_QUERY = "SELECT * FROM films WHERE id = ?";
+    private static final String FIND_ALL_QUERY = "SELECT f.id, " +
+            "f.name, " +
+            "f.description, " +
+            "f.release_date, " +
+            "f.duration, " +
+            "r.id AS rating_id, " +
+            "r.name AS rating_name, " +
+            "GROUP_CONCAT(g.id || ':' || g.name SEPARATOR ',') AS genres " +
+            "FROM films f " +
+            "LEFT JOIN ratings r ON f.rating = r.id " +
+            "LEFT JOIN film_genres fg ON f.id = fg.film_id " +
+            "LEFT JOIN genres g ON fg.genre_id = g.id " +
+            "GROUP BY f.id";
+    private static final String FIND_BY_ID_QUERY = "SELECT f.id, " +
+            "f.name, " +
+            "f.description, " +
+            "f.release_date, " +
+            "f.duration, " +
+            "r.id AS rating_id, " +
+            "r.name AS rating_name, " +
+            "GROUP_CONCAT(g.id || ':' || g.name SEPARATOR ',') AS genres " +
+            "FROM films f " +
+            "LEFT JOIN ratings r ON f.rating = r.id " +
+            "LEFT JOIN film_genres fg ON f.id = fg.film_id " +
+            "LEFT JOIN genres g ON fg.genre_id = g.id " +
+            "WHERE f.id = ? " +
+            "GROUP BY f.id";
     private static final String INSERT_QUERY = "INSERT INTO films(name, description, release_date, duration, rating)" +
             "VALUES (?, ?, ?, ?, ?)";
-    private static final String UPDATE_QUERY = "UPDATE films SET name = ?, " +
+    private static final String UPDATE_QUERY = "UPDATE films " +
+            "SET name = ?, " +
             "description = ?, " +
             "release_date = ?, " +
             "duration = ?, " +
@@ -30,18 +56,26 @@ public class DbFilmStorage extends DbBaseStorage<Film> implements FilmStorage {
         return findOne(FIND_BY_ID_QUERY, filmId);
     }
 
-    public List<Film> getCollection() {
+    public List<Film> getAll() {
         return findMany(FIND_ALL_QUERY);
     }
 
     public Film save(Film film) {
+        Long ratingId;
+
+        if (film.getRating() == null) {
+            ratingId = null;
+        } else {
+            ratingId = film.getRating().getId();
+        }
+
         long id = insert(
                 INSERT_QUERY,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
-                film.getRatingId()
+                ratingId
         );
 
         film.setId(id);
@@ -50,20 +84,24 @@ public class DbFilmStorage extends DbBaseStorage<Film> implements FilmStorage {
     }
 
     public Film update(Film film) {
+        Long ratingId;
+
+        if (film.getRating() == null) {
+            ratingId = null;
+        } else {
+            ratingId = film.getRating().getId();
+        }
+
         update(
                 UPDATE_QUERY,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
-                film.getRatingId(),
+                ratingId,
                 film.getId()
         );
 
         return film;
-    }
-
-    public Film delete(long filmId) {
-        throw new RuntimeException("Not implemented");
     }
 }

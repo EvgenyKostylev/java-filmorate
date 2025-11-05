@@ -23,7 +23,7 @@ public class GenreController {
     }
 
     @GetMapping
-    public Collection<GenreDto> getCollection() {
-        return genreService.getCollection();
+    public Collection<GenreDto> getAll() {
+        return genreService.getAll();
     }
 }

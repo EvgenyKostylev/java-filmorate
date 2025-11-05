@@ -35,8 +35,8 @@ public class FilmController {
     }
 
     @GetMapping
-    public Collection<FilmDto> getCollection() {
-        return filmService.getCollection();
+    public Collection<FilmDto> getAll() {
+        return filmService.getAll();
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -54,7 +54,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<FilmDto> getMostPopularCollection(
+    public Collection<FilmDto> getMostPopular(
             @RequestParam long count) {
         return filmService.getMostPopularFilms(count);
     }

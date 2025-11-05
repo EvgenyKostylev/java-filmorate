@@ -28,9 +28,8 @@ public class NewFilmRequest {
     @Positive
     private final Long duration;
 
-    @JsonProperty("genres")
-    private final List<Genre> genre;
-
     @JsonProperty("mpa")
     private final Rating rating;
+
+    private final List<Genre> genres;
 }

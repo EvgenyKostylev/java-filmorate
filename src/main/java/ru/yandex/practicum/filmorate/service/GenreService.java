@@ -24,8 +24,8 @@ public class GenreService {
                 .orElseThrow(() -> new NotFoundException("Жанр с id = " + genreId + " не найден"));
     }
 
-    public Collection<GenreDto> getCollection() {
-        return genreStorage.getCollection()
+    public Collection<GenreDto> getAll() {
+        return genreStorage.getAll()
                 .stream()
                 .map(GenreMapper::mapToGenreDto)
                 .collect(Collectors.toList());

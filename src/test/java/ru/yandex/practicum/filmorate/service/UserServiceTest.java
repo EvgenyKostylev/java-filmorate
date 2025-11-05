@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
-class UserServiceTest {
+public class UserServiceTest {
 
     @Autowired
     private UserService userService;
 
     @Test
-    void userNameUseLoginIfNameIsEmpty() {
+    public void userNameUseLoginIfNameIsEmpty() {
         NewUserRequest user = new NewUserRequest(
                 "Login@Mail",
                 "Login",

@@ -31,11 +31,10 @@ public class UpdateFilmRequest {
     @PositiveOrZero
     private final Long duration;
 
-    @JsonProperty("genres")
-    private final List<Genre> genre;
-
     @JsonProperty("mpa")
     private final Rating rating;
+
+    private final List<Genre> genres;
 
     public boolean hasName() {
         return name != null && !name.isEmpty();
@@ -55,5 +54,9 @@ public class UpdateFilmRequest {
 
     public boolean hasRating() {
         return rating != null;
+    }
+
+    public boolean hasGenres() {
+        return genres != null;
     }
 }

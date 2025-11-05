@@ -6,9 +6,9 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import java.util.List;
 
 public interface FilmGenreStorage {
-    List<FilmGenre> getCollection(long filmId);
+    List<FilmGenre> getAllById(long filmId);
 
-    List<Long> saveCollection(long filmId, List<Genre> collection);
+    List<Long> saveAllById(long filmId, List<Genre> collection);
 
-    boolean deleteCollection(long filmId);
+    boolean deleteAllById(long filmId);
 }

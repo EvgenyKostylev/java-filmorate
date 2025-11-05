@@ -11,21 +11,24 @@ import java.util.*;
 
 @Repository
 public class DbFilmGenreStorage extends DbBaseStorage<FilmGenre> implements FilmGenreStorage {
-    private static final String FIND_BY_ID_QUERY = "SELECT * FROM film_genres WHERE film_id = ?";
+    private static final String FIND_BY_ID_QUERY = "SELECT * " +
+            "FROM film_genres " +
+            "WHERE film_id = ?";
     private static final String INSERT_QUERY = "INSERT INTO film_genres(film_id, genre_id)" +
             "VALUES (?, ?)";
-    private static final String DELETE_QUERY = "DELETE FROM film_genres WHERE film_id = ?";
+    private static final String DELETE_QUERY = "DELETE FROM film_genres " +
+            "WHERE film_id = ?";
 
     public DbFilmGenreStorage(JdbcTemplate jdbc, RowMapper<FilmGenre> mapper) {
         super(jdbc, mapper);
     }
 
-    public List<FilmGenre> getCollection(long filmId) {
+    public List<FilmGenre> getAllById(long filmId) {
         return findMany(FIND_BY_ID_QUERY, filmId);
     }
 
-    public List<Long> saveCollection(long filmId, List<Genre> collection) {
-        deleteCollection(filmId);
+    public List<Long> saveAllById(long filmId, List<Genre> collection) {
+        deleteAllById(filmId);
 
         if (collection == null || collection.isEmpty()) {
             return Collections.emptyList();
@@ -42,7 +45,7 @@ public class DbFilmGenreStorage extends DbBaseStorage<FilmGenre> implements Film
                 }).toList();
     }
 
-    public boolean deleteCollection(long filmId) {
+    public boolean deleteAllById(long filmId) {
         return delete(DELETE_QUERY, filmId);
     }
 }

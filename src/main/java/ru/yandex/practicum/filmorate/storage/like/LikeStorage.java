@@ -12,5 +12,5 @@ public interface LikeStorage {
 
     Optional<Like> get(long filmId, long userId);
 
-    List<Like> getCollection(long filmId);
+    List<Like> getAllById(long filmId);
 }

@@ -23,7 +23,7 @@ public class RatingController {
     }
 
     @GetMapping
-    public Collection<RatingDto> getCollection() {
-        return ratingService.getCollection();
+    public Collection<RatingDto> getAll() {
+        return ratingService.getAll();
     }
 }

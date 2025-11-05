@@ -26,12 +26,12 @@ import static org.assertj.core.api.Assertions.assertThat;
         FriendshipRowMapper.class,
         DbUserStorage.class,
         UserRowMapper.class})
-class DbFriendshipStorageTest {
+public class DbFriendshipStorageTest {
     private final DbFriendshipStorage dbFriendshipStorage;
     private final DbUserStorage dbUserStorage;
 
     @Test
-    void testSendFriendRequest() {
+    public void testSendFriendRequest() {
         User user1 = dbUserStorage.save(User.builder()
                 .email("user1@mail.com")
                 .login("user1")
@@ -57,7 +57,7 @@ class DbFriendshipStorageTest {
     }
 
     @Test
-    void testAcceptFriendship() {
+    public void testAcceptFriendship() {
         User user1 = dbUserStorage.save(User.builder()
                 .email("user1@mail.com")
                 .login("user1")
@@ -86,7 +86,7 @@ class DbFriendshipStorageTest {
     }
 
     @Test
-    void testRemoveFriendship() {
+    public void testRemoveFriendship() {
         User user1 = dbUserStorage.save(User.builder()
                 .email("user1@mail.com")
                 .login("user1")
@@ -114,7 +114,7 @@ class DbFriendshipStorageTest {
     }
 
     @Test
-    void testGetAllFriendships() {
+    public void testGetAllFriendships() {
         User user1 = dbUserStorage.save(User.builder()
                 .email("user1@mail.com")
                 .login("user1")
@@ -139,7 +139,7 @@ class DbFriendshipStorageTest {
         dbFriendshipStorage.save(user1.getId(), user2.getId());
         dbFriendshipStorage.save(user1.getId(), user3.getId());
 
-        List<Friendship> friendships = dbFriendshipStorage.getCollection(user1.getId());
+        List<Friendship> friendships = dbFriendshipStorage.getAllById(user1.getId());
 
         assertThat(friendships).isNotEmpty();
         assertThat(friendships.size()).isGreaterThanOrEqualTo(2);

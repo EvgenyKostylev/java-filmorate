@@ -56,8 +56,8 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
     }
 
-    public Collection<UserDto> getCollection() {
-        return userStorage.getCollection()
+    public Collection<UserDto> getAll() {
+        return userStorage.getAll()
                 .stream()
                 .map(UserMapper::mapToUserDto)
                 .collect(Collectors.toList());
@@ -98,10 +98,10 @@ public class UserService {
         log.info("Пользователь {} убрал из друзей пользователя {}", userId, friendId);
     }
 
-    public Collection<UserDto> getFriendCollection(long userId) {
+    public Collection<UserDto> getAllFriends(long userId) {
         ensureUserExists(userId);
 
-        List<Friendship> friendships = friendshipStorage.getCollection(userId)
+        List<Friendship> friendships = friendshipStorage.getAllById(userId)
                 .stream()
                 .filter(friendship -> friendship.getFirstUserId() == userId
                         || friendship.getStatus() == FriendStatus.CONFIRMED).toList();
@@ -115,12 +115,12 @@ public class UserService {
         }).map(UserMapper::mapToUserDto).toList();
     }
 
-    public Collection<UserDto> getMutualFriendCollection(long userId, long friendId) {
+    public Collection<UserDto> getMutualFriends(long userId, long friendId) {
         ensureUserExists(userId);
         ensureUserExists(friendId);
 
-        Collection<UserDto> listUserFriends = getFriendCollection(userId);
-        Collection<UserDto> listFriendFriends = getFriendCollection(friendId);
+        Collection<UserDto> listUserFriends = getAllFriends(userId);
+        Collection<UserDto> listFriendFriends = getAllFriends(friendId);
 
         return listUserFriends.stream().filter(listFriendFriends::contains).collect(Collectors.toList());
     }

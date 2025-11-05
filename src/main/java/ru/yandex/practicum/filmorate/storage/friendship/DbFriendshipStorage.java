@@ -14,13 +14,20 @@ import java.util.Optional;
 public class DbFriendshipStorage extends DbBaseStorage<Friendship> implements FriendshipStorage {
     private static final String INSERT_QUERY = "INSERT INTO friendships(first_user_id, second_user_id, status)" +
             "VALUES (?, ?, ?)";
-    private static final String FIND_BY_IDS_QUERY = "SELECT * FROM friendships WHERE (first_user_Id = ? " +
+    private static final String FIND_BY_IDS_QUERY = "SELECT * " +
+            "FROM friendships " +
+            "WHERE (first_user_Id = ? " +
             "AND second_user_id = ?) " +
             "OR (first_user_id = ? " +
             "AND second_user_id = ?)";
-    private static final String DELETE_QUERY = "DELETE FROM friendships WHERE id = ?";
-    private static final String UPDATE_QUERY = "UPDATE friendships SET status = ? WHERE id = ?";
-    private static final String FIND_BY_ID_QUERY = "SELECT * FROM friendships WHERE first_user_Id = ? " +
+    private static final String DELETE_QUERY = "DELETE FROM friendships " +
+            "WHERE id = ?";
+    private static final String UPDATE_QUERY = "UPDATE friendships " +
+            "SET status = ? " +
+            "WHERE id = ?";
+    private static final String FIND_BY_ID_QUERY = "SELECT * " +
+            "FROM friendships " +
+            "WHERE first_user_Id = ? " +
             "OR second_user_id = ?";
 
     public DbFriendshipStorage(JdbcTemplate jdbc, RowMapper<Friendship> mapper) {
@@ -48,7 +55,7 @@ public class DbFriendshipStorage extends DbBaseStorage<Friendship> implements Fr
         return findOne(FIND_BY_IDS_QUERY, firstUserId, secondUserId, secondUserId, firstUserId);
     }
 
-    public List<Friendship> getCollection(long userId) {
+    public List<Friendship> getAllById(long userId) {
         return findMany(FIND_BY_ID_QUERY, userId, userId);
     }
 }

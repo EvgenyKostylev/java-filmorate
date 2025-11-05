@@ -11,12 +11,17 @@ import java.util.Optional;
 
 @Repository
 public class DbLikeStorage extends DbBaseStorage<Like> implements LikeStorage {
-    private static final String FIND_BY_IDS_QUERY = "SELECT * FROM likes WHERE film_id = ? " +
+    private static final String FIND_BY_IDS_QUERY = "SELECT * " +
+            "FROM likes " +
+            "WHERE film_id = ? " +
             "AND user_id = ?";
-    private static final String FIND_ALL_BY_ID_QUERY = "SELECT * FROM likes WHERE film_id = ?";
+    private static final String FIND_ALL_BY_ID_QUERY = "SELECT * " +
+            "FROM likes " +
+            "WHERE film_id = ?";
     private static final String INSERT_QUERY = "INSERT INTO likes(film_id, user_id)" +
             "VALUES (?, ?)";
-    private static final String DELETE_QUERY = "DELETE FROM likes WHERE film_id = ? " +
+    private static final String DELETE_QUERY = "DELETE FROM likes " +
+            "WHERE film_id = ? " +
             "AND user_id = ?";
 
     public DbLikeStorage(JdbcTemplate jdbc, RowMapper<Like> mapper) {
@@ -42,7 +47,7 @@ public class DbLikeStorage extends DbBaseStorage<Like> implements LikeStorage {
         return findOne(FIND_BY_IDS_QUERY, filmId, userId);
     }
 
-    public List<Like> getCollection(long filmId) {
+    public List<Like> getAllById(long filmId) {
         return findMany(FIND_ALL_BY_ID_QUERY, filmId);
     }
 }

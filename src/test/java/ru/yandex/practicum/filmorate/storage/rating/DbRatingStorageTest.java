@@ -19,11 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Import({DbRatingStorage.class,
         RatingRowMapper.class})
-class DbRatingStorageTest {
+public class DbRatingStorageTest {
     private final DbRatingStorage dbRatingStorage;
 
     @Test
-    void testGetRatingById() {
+    public void testGetRatingById() {
         Optional<Rating> ratingOptional = dbRatingStorage.get(1L);
 
         assertThat(ratingOptional)
@@ -39,15 +39,15 @@ class DbRatingStorageTest {
     }
 
     @Test
-    void testGetRatingNotFound() {
+    public void testGetRatingNotFound() {
         Optional<Rating> ratingOptional = dbRatingStorage.get(9999L);
 
         assertThat(ratingOptional).isEmpty();
     }
 
     @Test
-    void testGetAllRatings() {
-        List<Rating> ratings = dbRatingStorage.getCollection();
+    public void testGetAllRatings() {
+        List<Rating> ratings = dbRatingStorage.getAll();
 
         assertThat(ratings)
                 .isNotNull()

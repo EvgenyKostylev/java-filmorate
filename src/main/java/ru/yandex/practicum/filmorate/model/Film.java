@@ -8,8 +8,7 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.DateAfter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -32,19 +31,7 @@ public class Film {
     @Positive
     private Long duration;
 
-    private Long ratingId;
+    private Rating rating;
 
-    private Set<Long> listUsersByIdLikes = new HashSet<>();
-
-    public void addLike(long userId) {
-        listUsersByIdLikes.add(userId);
-    }
-
-    public void removeLike(long userId) {
-        listUsersByIdLikes.remove(userId);
-    }
-
-    public int getLikeCount() {
-        return listUsersByIdLikes.size();
-    }
+    private List<Genre> genres;
 }
