@@ -1,51 +1,133 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.user.NewUserRequest;
+import ru.yandex.practicum.filmorate.dto.user.UpdateUserRequest;
+import ru.yandex.practicum.filmorate.dto.user.UserDto;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.FriendStatus;
+import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.friendship.FriendshipStorage;
+import ru.yandex.practicum.filmorate.storage.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserService {
+    public UserService(@Autowired @Qualifier("dbUserStorage") UserStorage userStorage,
+                       @Autowired FriendshipStorage friendshipStorage) {
+        this.userStorage = userStorage;
+        this.friendshipStorage = friendshipStorage;
+    }
+
     private final UserStorage userStorage;
+    private final FriendshipStorage friendshipStorage;
 
-    public void addToFriends(long userId, long friendId) {
-        User user = userStorage.get(userId);
-        User friend = userStorage.get(friendId);
+    public UserDto save(NewUserRequest request) {
+        User user = UserMapper.mapToUser(request);
 
-        user.addFriend(friendId);
-        friend.addFriend(userId);
-        log.info("Пользователь {} добавил в друзья пользователя {}", user, friend);
+        user = userStorage.save(user);
+
+        return UserMapper.mapToUserDto(user);
     }
 
-    public void removeFromFriends(long userId, long friendId) {
-        User user = userStorage.get(userId);
-        User friend = userStorage.get(friendId);
+    public UserDto update(UpdateUserRequest request) {
+        User updatedUser = userStorage.get(request.getId())
+                .map(user -> UserMapper.updateUserFields(user, request))
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + request.getId() + " не найден"));
 
-        user.removeFriend(friendId);
-        friend.removeFriend(userId);
-        log.info("Пользователь {} убрал из друзей пользователя {}", user, friend);
+        updatedUser = userStorage.update(updatedUser);
+
+        return UserMapper.mapToUserDto(updatedUser);
     }
 
-    public Collection<User> getListFriends(long userId) {
-        User user = userStorage.get(userId);
+    public UserDto get(long userId) {
+        return userStorage.get(userId)
+                .map(UserMapper::mapToUserDto)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+    }
 
-        return userStorage.getCollection()
+    public Collection<UserDto> getAll() {
+        return userStorage.getAll()
                 .stream()
-                .filter(userFromStorage -> user.getFriends().contains(userFromStorage.getId()))
+                .map(UserMapper::mapToUserDto)
                 .collect(Collectors.toList());
     }
 
-    public Collection<User> getListMutualFriends(long userId, long friendId) {
-        Collection<User> listUserFriends = getListFriends(userId);
-        Collection<User> listFriendFriends = getListFriends(friendId);
+    public void addToFriends(long userId, long friendId) {
+        ensureUserExists(userId);
+        ensureUserExists(friendId);
+
+        Optional<Friendship> friendshipOptional = friendshipStorage.get(userId, friendId);
+
+        if (friendshipOptional.isPresent()) {
+            if (userId == friendshipOptional.get().getSecondUserId()) {
+                if (friendshipOptional.get().getStatus() == FriendStatus.PENDING) {
+                    friendshipStorage.accept(friendshipOptional.get().getId());
+                }
+            }
+        } else {
+            friendshipStorage.save(userId, friendId);
+        }
+
+        log.info("Пользователь {} добавил в друзья пользователя {}", userId, friendId);
+    }
+
+    public void deleteFromFriends(long userId, long friendId) {
+        ensureUserExists(userId);
+        ensureUserExists(friendId);
+
+        Optional<Friendship> friendshipOptional = friendshipStorage.get(userId, friendId);
+
+        if (friendshipOptional.isPresent()) {
+            if (friendshipOptional.get().getStatus() == FriendStatus.CONFIRMED
+                    || friendshipOptional.get().getFirstUserId() == userId) {
+                friendshipStorage.delete(friendshipOptional.get().getId());
+            }
+        }
+
+        log.info("Пользователь {} убрал из друзей пользователя {}", userId, friendId);
+    }
+
+    public Collection<UserDto> getAllFriends(long userId) {
+        ensureUserExists(userId);
+
+        List<Friendship> friendships = friendshipStorage.getAllById(userId)
+                .stream()
+                .filter(friendship -> friendship.getFirstUserId() == userId
+                        || friendship.getStatus() == FriendStatus.CONFIRMED).toList();
+
+        return friendships.stream().map(friendship -> {
+            if (friendship.getFirstUserId() == userId) {
+                return userStorage.get(friendship.getSecondUserId()).get();
+            } else {
+                return userStorage.get(friendship.getFirstUserId()).get();
+            }
+        }).map(UserMapper::mapToUserDto).toList();
+    }
+
+    public Collection<UserDto> getMutualFriends(long userId, long friendId) {
+        ensureUserExists(userId);
+        ensureUserExists(friendId);
+
+        Collection<UserDto> listUserFriends = getAllFriends(userId);
+        Collection<UserDto> listFriendFriends = getAllFriends(friendId);
 
         return listUserFriends.stream().filter(listFriendFriends::contains).collect(Collectors.toList());
+    }
+
+    private void ensureUserExists(long userId) {
+        if (userStorage.get(userId).isEmpty()) {
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
+        }
     }
 }

@@ -3,14 +3,15 @@ package ru.yandex.practicum.filmorate.model;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.DateAfter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
+@Builder
 public class Film {
     private static final int MAX_DESCRIPTION_LENGTH = 200;
 
@@ -19,28 +20,18 @@ public class Film {
     private Long id;
 
     @NotBlank
-    private final String name;
+    private String name;
 
     @Size(max = MAX_DESCRIPTION_LENGTH)
-    private final String description;
+    private String description;
 
     @DateAfter(date = MIN_RELEASE_DATE)
-    private final LocalDate releaseDate;
+    private LocalDate releaseDate;
 
     @Positive
-    private final long duration;
+    private Long duration;
 
-    private Set<Long> listUsersByIdLikes = new HashSet<>();
+    private Rating rating;
 
-    public void addLike(long userId) {
-        listUsersByIdLikes.add(userId);
-    }
-
-    public void removeLike(long userId) {
-        listUsersByIdLikes.remove(userId);
-    }
-
-    public int getLikeCount() {
-        return listUsersByIdLikes.size();
-    }
+    private List<Genre> genres;
 }
